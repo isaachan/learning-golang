@@ -53,6 +53,23 @@ func readValues(infile string) (values []int, err error) {
   return
 }
 
+func writeValues(values []int, outfile string) error {
+  file, err := os.Create(outfile)
+  if err != nil {
+    fmt.Println("Failed to create the output file ", outfile)
+    return err
+  }
+
+  defer file.Close()
+
+  for _, value := range values {
+    str := strconv.Itoa(value)
+    file.WriteString(str + "\n")
+  }
+  
+  return nil
+}
+ 
 func main() {
   flag.Parse()
 
@@ -65,5 +82,12 @@ func main() {
     fmt.Println("Read values: ", values)
   } else {
     fmt.Println("error during reading file.")
+  }
+
+  err = writeValues(values, *outfile)
+  if (err == nil) {
+    fmt.Println("Write values to outfile.")
+  } else {
+    fmt.Println("Error during writing to outfile")
   }
 }

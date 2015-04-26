@@ -6,6 +6,11 @@ import "os"
 import "bufio"
 import "io"
 import "strconv"
+import "time"
+
+import "algorithms/qsort"
+import "algorithms/bubblesort"
+
 
 var infile *string = flag.String("i", "infile", "File contains values for sorting")
 var outfile *string = flag.String("o", "outfile", "File to receive sorted values")
@@ -78,16 +83,22 @@ func main() {
   }
 
   values, err := readValues(*infile)
-  if (err == nil) {
-    fmt.Println("Read values: ", values)
-  } else {
-    fmt.Println("error during reading file.")
-  }
 
-  err = writeValues(values, *outfile)
-  if (err == nil) {
-    fmt.Println("Write values to outfile.")
+  if err == nil {
+    t1 := time.Now()
+    switch *algorithm {
+      case "qsort":
+        qsort.QuickSort(values)
+      case "bubblesort":
+        bubblesort.BubbleSort(values)
+      default:
+        fmt.Println("Sorting algorithm", *algorithm, "is either unkown or unsupported.")
+    }
+    t2 := time.Now()
+    fmt.Println("The sorting process costs", t2.Sub(t1), "to complete.")
+
+    writeValues(values, *outfile)
   } else {
-    fmt.Println("Error during writing to outfile")
+    fmt.Println(err)
   }
 }
